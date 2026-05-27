@@ -9,21 +9,6 @@ module.exports = (client) => {
     const cmd = args.shift()?.toLowerCase();
 
     const command = client.commands.get(cmd);
-
-    if (!command) return;
-
-    // 🔐 MANAGER CHECK (for important commands)
-    const managerOnly = ["panel", "add"];
-
-    if (managerOnly.includes(cmd)) {
-      if (
-        !message.member.permissions.has("Administrator") &&
-        !message.member.roles.cache.has(config.managerRole)
-      ) {
-        return message.reply("❌ You are not allowed to manage the bot.");
-      }
-    }
-
-    command.run(client, message, args);
+    if (command) command.run(client, message, args);
   });
 };
