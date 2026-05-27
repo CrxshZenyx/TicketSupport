@@ -35,8 +35,15 @@ module.exports = (client) => {
         const embed = new EmbedBuilder()
           .setTitle("🎫 Ticket Created")
           .setDescription(`Type: **${type}**`)
-          .setColor("Green");
+          .setColor("Black");
+        
+        const logChannel = interaction.guild.channels.cache.get(config.logChannel);
 
+if (logChannel) {
+  logChannel.send({
+    content: `🎫 **Ticket Created**\nUser: <@${interaction.user.id}>\nChannel: ${channel}`
+  });
+}
         const buttons = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
             .setCustomId("claim")
@@ -71,6 +78,14 @@ if (interaction.customId === "claim") {
 
   data[interaction.user.id] = (data[interaction.user.id] || 0) + 1;
   fs.writeFileSync("./leaderboard.json", JSON.stringify(data, null, 2));
+
+  const logChannel = interaction.guild.channels.cache.get(config.logChannel);
+
+if (logChannel) {
+  logChannel.send({
+    content: `🔒 **Ticket Claimed**\nUser: <@${interaction.user.id}>\nChannel: ${interaction.channel.name}`
+  });
+}
 
   // Rename channel
   if (interaction.channel.name.startsWith("ticket-")) {
