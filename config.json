@@ -1,13 +1,4 @@
-  // BOT PRESENCE (what users see under the bot name)
-  // =========================
-  // `status` options:
-  // - "online"    = green dot
-  // - "idle"      = yellow moon
-  // - "dnd"       = red do-not-disturb
-  // - "invisible" = appears offline
-  presence: {
-    // Current online state shown on Discord.
-    status: "online",
+
 {
   "token": "MTUwODk2Njc0ODA0NzgwMjUyMA.GKzsMZ.VqwpKZ3wTRHDp9d3Rm04Azvbm-JTcRYVRi2Z6I",
   "prefix": "!",
