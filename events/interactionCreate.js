@@ -128,7 +128,14 @@ if (logChannel) {
         fs.writeFileSync(`./transcript-${channel.id}.txt`, transcript);
 
         await channel.send("Closing ticket...");
+        
+const logChannel = interaction.guild.channels.cache.get(config.logChannel);
 
+if (logChannel) {
+  logChannel.send({
+    content: `❌ **Ticket Closed**\nChannel: ${interaction.channel.name}\nClosed by: <@${interaction.user.id}>`
+  });
+}
         setTimeout(() => channel.delete(), 3000);
       }
     }
