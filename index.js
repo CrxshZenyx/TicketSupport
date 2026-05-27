@@ -1,6 +1,9 @@
-const { Client, GatewayIntentBits, Partials, Collection } = require("discord.js");
-const config = require("./config.json");
-const fs = require("fs");
+const { Client, GatewayIntentBits } = require("discord.js");
+const express = require("express");
+
+const app = express();
+app.get("/", (req, res) => res.send("Bot is online"));
+app.listen(process.env.PORT || 3000);
 
 const client = new Client({
   intents: [
@@ -8,20 +11,17 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers
-  ],
-  partials: [Partials.Channel]
+  ]
 });
 
-client.commands = new Collection();
+client.on("ready", () => {
+  console.log(`Logged in as ${client.user.tag}`);
+});
 
-// Load commands
-for (const file of fs.readdirSync("./commands")) {
-  const command = require(`./commands/${file}`);
-  client.commands.set(command.name, command);
-}
+client.on("messageCreate", (message) => {
+  if (message.content === "!ping") {
+    message.reply("Pong!");
+  }
+});
 
-// Events
-require("./events/messageCreate")(client);
-require("./events/interactionCreate")(client);
-
-client.login(config.token);
+client.login(process.env.TOKEN);
