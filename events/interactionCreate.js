@@ -64,22 +64,39 @@ module.exports = (client) => {
       const channel = interaction.channel;
 
       // CLAIM
-   if (interaction.customId === "claim") {
+if (interaction.customId === "claim") {
 
+  const fs = require("fs");
   const data = JSON.parse(fs.readFileSync("./leaderboard.json"));
 
   data[interaction.user.id] = (data[interaction.user.id] || 0) + 1;
   fs.writeFileSync("./leaderboard.json", JSON.stringify(data, null, 2));
 
-  // Rename ticket channel
+  // Rename channel
   if (interaction.channel.name.startsWith("ticket-")) {
     await interaction.channel.setName(`claimed-${interaction.user.username}`);
   }
 
-  await interaction.channel.setTopic(`Claimed by ${interaction.user.tag}`);
+  // LOCK SYSTEM
+  await interaction.channel.permissionOverwrites.edit(interaction.guild.id, {
+    SendMessages: false,
+    ViewChannel: true
+  });
 
-  interaction.reply({
-    content: `🎫 Ticket claimed by <@${interaction.user.id}>`,
+  await interaction.channel.permissionOverwrites.edit(interaction.user.id, {
+    SendMessages: true,
+    ViewChannel: true
+  });
+
+  await interaction.channel.permissionOverwrites.edit(config.supportRole, {
+    SendMessages: true,
+    ViewChannel: true
+  });
+
+  await interaction.channel.setTopic(`🔒 Claimed by ${interaction.user.tag}`);
+
+  return interaction.reply({
+    content: `🔒 Ticket claimed and locked by <@${interaction.user.id}>`,
     ephemeral: false
   });
 }
