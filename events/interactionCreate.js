@@ -64,16 +64,25 @@ module.exports = (client) => {
       const channel = interaction.channel;
 
       // CLAIM
-      if (interaction.customId === "claim") {
-        channel.setTopic(`Claimed by ${interaction.user.id}`);
+   if (interaction.customId === "claim") {
 
-        interaction.reply("Ticket claimed.");
+  const data = JSON.parse(fs.readFileSync("./leaderboard.json"));
 
-        const data = JSON.parse(fs.readFileSync("./leaderboard.json"));
-        data[interaction.user.id] = (data[interaction.user.id] || 0) + 1;
-        fs.writeFileSync("./leaderboard.json", JSON.stringify(data, null, 2));
-      }
+  data[interaction.user.id] = (data[interaction.user.id] || 0) + 1;
+  fs.writeFileSync("./leaderboard.json", JSON.stringify(data, null, 2));
 
+  // Rename ticket channel
+  if (interaction.channel.name.startsWith("ticket-")) {
+    await interaction.channel.setName(`claimed-${interaction.user.username}`);
+  }
+
+  await interaction.channel.setTopic(`Claimed by ${interaction.user.tag}`);
+
+  interaction.reply({
+    content: `🎫 Ticket claimed by <@${interaction.user.id}>`,
+    ephemeral: false
+  });
+}
       // CLOSE
       if (interaction.customId === "close") {
 
